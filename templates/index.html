@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}I211 Lecture{% endblock %}
+{% block content %}
+  <nav>
+    <a href="index.html">Home</a> &nbsp; | &nbsp; <a href="about.html">About</a>
+  </nav>
+    <h1>Dino-Site!</h1>
+    {% for dino in data %}
+    <h2>name of the dinosaur</h2>
+{{data}}
+    <figure>
+      <img src="{{url_for('static',filename='images/'+dinosaurs[dino]['image'])}}" alt="{{dino}}">
+      <figcaption>{{dinosaurs[dino]['image-credit']}}</figcaption>
+    </figure>
+    {% endfor %}
+{% endblock %}
