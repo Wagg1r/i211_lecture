@@ -12,7 +12,10 @@ with open('dinosaurs.csv', 'r') as csvfile:
 @app.route('/dino')
 @app.route('/dino/<dino>')
 def index(dino=None):
-    return render_template('index.html', dinosaurs=dinosaurs)
+    if dino != None:
+        return render_template('dino.html', dinosaurs=dinosaurs)
+    else:
+        return render_template('index.html', dinosaurs=dinosaurs)
     #make sure dino exists
 
 
