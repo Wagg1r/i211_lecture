@@ -1,0 +1,45 @@
+<form action="{{url_for('add_dino')}}" method="POST" name="add_info">
+    
+
+    <!-- add two text inputs, one for "slug and one for "name" -->
+    <div>
+        <label for="Slug">Slug:</label>
+        <input type="text" id="Slug" name="Slug" required>
+    </div>
+
+    <div>
+        <label for="Name">Name:</label>
+        <input type="text" id="name" name="name" required>
+    </div>
+
+    <div>
+        <label for="image">Image:</label>
+        <input type="text" id="image" name="image">
+    </div>
+
+    <div>
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="description">
+    </div>
+
+    <div>
+        <label for="image-credit">Image Credit:</label>
+        <input type="text" id="image" name="image">
+    </div>
+
+    <!-- <div>
+        <label for="image-credit">Image Credit:</label>
+        <input type="text" id="image" name="image">
+    </div>
+
+    <div>
+        <label for="image-credit">Image Credit:</label>
+        <input type="text" id="image" name="image">
+    </div> -->
+
+
+
+
+    <button type="submit" value="Submit">Submit</button>
+    <button type="reset" value="Reset">Reset</button>
+</form>
