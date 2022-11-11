@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %} Add A Fact! {% endblock %}
+{% block content %}
+
+<h2> Add a fact for {{dino['name']}}</h2>
+
+
+
+
+<form action="{{url_for('addfact')}}" method="POST" name="add_fact">
+
+<!-- Text input -->
+<div>
+    <input type="text" id="name" name="name">
+    <label for="extinct">Name</label>
+</div>
+
+<div>
+    <textarea id="fact" name="fact"></textarea>
+    <label for="fact">Fun fact about {{dino['name']}}</label>
+</div>
+
+<button type="submit" value="Submit">Submit</button>
+<button type="reset" value="Reset">Reset</button>
+</form>
+
+{% endblock %}

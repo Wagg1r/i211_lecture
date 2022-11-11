@@ -1,6 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for
 import csv
+from os.path import exists
+import pymysql
 app = Flask(__name__)
+
+app.config.from_pyfile(app.root_path + '/config_defaults.py')
+
+if exists(app.root_path + '/config.py'):
+    app.config.from_pyfile(app.root_path + '/config.py')
+import database
 
 DINO_PATH = app.root_path + '/dinosaurs.csv'
 DINO_KEYS = ['slug', 'name', 'description', 'image', 'image-credit', 'source-url', 'source-credit']
@@ -16,17 +24,33 @@ def get_dinos():
         print(e)
     return dinosaurs
 
+def insert_fact(dino_id, name, fact):
+    sql = "INSERT INTO fact (dino_id, name, fact) VALUES (%s,%s,%s)"
+    conn = database.get_connection()
+    with conn:
+        with conn.cursor() as cursor:
+            cursor.execute(sql, (dino_id,name,fact))
+        conn.commit()
+
+def get_facts(dino_id):
+    sql = "select * from fact where dino_id =%s"
+    conn = database.get_connection()
+    with conn:
+        with conn.cursor() as cursor:
+            cursor.execute(sql,(dino_id))
+            return cursor.fetchall()
+    
+
 @app.route('/')
 @app.route('/dino/')
 @app.route('/dino/<dino>')
-def index(dino=None):
-    dinosaurs = get_dinos()
-
-    print(dino)
-    if dino and dino in dinosaurs.keys():
-        dinosaur = dinosaurs[dino]
-        return render_template('dino.html', dinosaur = dinosaur)
+def index(dino_id=None):
+    if dino_id:
+        dinosaur = database.get_dino(dino_id)
+        facts=database.get_facts(dino_id)
+        return render_template('dino.html', dinosaur = dinosaur ,facts=facts)
     else:
+        dinosaurs=database.get_dinos()
         return render_template('index.html', dinosaurs=dinosaurs)
 
 @app.route('/about')
@@ -36,23 +60,19 @@ def about():
 @app.route('/add_dino', methods=['GET', 'POST'])
 def add_dino():
     if request.method == 'POST':
-        dinosaurs = get_dinos()
-        new_dino = {}
-        new_dino['slug'] = request.form['slug']
-        new_dino['name'] = request.form['name']
-        new_dino['description'] = request.form['description']
-        new_dino['image'] = request.form['image']
-        new_dino['image-credit'] = request.form['image-credit']
-        new_dino['source-url'] = request.form['source-url']
-        new_dino['source-credit'] = request.form['source-credit']
-
-        dinosaurs[request.form['slug']] = new_dino
+        slug = request.form['slug']
+        name = request.form['name']
+        description = request.form['description']
+        image = request.form['image']
+        image_credit = request.form['image-credit']
+        source_url = request.form['source-url']
+        source_credit = request.form['source-credit']
+        # Run function to add data for new
+        database.insert_dino(slug,name,description,image,image_credit,source_url,source_credit)
 
         return redirect(url_for('index'))
     else:
         return render_template('add-dino.html')
-
-
 with open ('faq.csv', 'r') as file:
     questions = csv.reader(file)
     qna = []
@@ -88,3 +108,16 @@ def dino_quiz():
         return render_template('quiz-results.html', quiz_results=quiz_results)
     else:
         return render_template('dino-quiz.html')
+
+
+@app.route('/dino/<dino_id>/addfact', methods=['GET','POST'])
+def addfact(dino_id):
+    dino_id=int(dino_id)
+    if request.method == 'POST':
+        name = request.form['name']
+        fact = request.form['fact']
+        database.insert_fact(dino_id, name, fact)
+        return redirect(url_for('index',dino_id=dino_id))
+    else:
+        dino = database.get_dino(dino_id)
+        return render_template("add_fact.html",dino=dino)

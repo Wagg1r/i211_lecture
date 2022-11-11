@@ -131,3 +131,5 @@ dmypy.json
 #vs code
 .vscode/
 
+#config this might break stuff it might not be in the right position
+config.py
