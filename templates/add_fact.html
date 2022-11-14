@@ -5,8 +5,9 @@
 <h2> Add a fact for {{dino['name']}}</h2>
 
 
-
-
+{{% if error %}}
+<h4 style="color:red">{{ error }}</h4>
+{{ endif }}
 <form action="{{url_for('addfact')}}" method="POST" name="add_fact">
 
 <!-- Text input -->

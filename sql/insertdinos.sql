@@ -11,6 +11,14 @@ source_url VARCHAR(65),
 source_credit VARCHAR(150)
 )ENGINE=INNODB;
 
+CREATE TABLE fact (
+id INT AUTO_INCREMENT PRIMARY KEY,
+dino_id INT,
+name VARCHAR(25),
+fact VARCHAR(255),
+FOREIGN KEY (dino_id) REFERENCES dinosaur(id)
+)ENGINE=INNODB;
+
 
 insert into dinosaur (slug, name, description, image, image_credit, source_url, source_credit) values
 ("t-rex", "Tyrannosaurus rex","The undisputed king of the dinosaurs, Tyrannosaurus rex is immensely popular thanks to a fawning press, countless starring roles in movies such as 'Jurassic Park' and TV shows, and a really cool name (Greek for 'tyrant lizard king'). Impressive fossils and models of T. rex standing on two hind legs with short arms outstretched toward visitors is what excites kids of all ages at museums such as Chicago's Field Museum of Natural History, New York City's Museum of Natural History, and Hill City, South Dakota's Black Hills Museum of Natural History—to name a few. With an average body of 43 feet long (a typical school bus is 45 feet) and a 5-foot head teeming with razor-sharp teeth, it's got a face not easily forgotten. Based on its bone structure, it probably weighed about 7.5 tons (adult African elephants average about 6 tons), and despite its size, many paleontologists believe it could efficiently run after prey and certainly outrun a human.","t-rex.webp","SCIEPRO / Getty Images","https://www.thoughtco.com/the-dinosaur-encyclopedia-1091968","Strauss, Bob. 'The Top 10 Famous Dinosaurs That Roamed the Earth.' ThoughtCo, Feb. 16, 2021, thoughtco.com/the-dinosaur-encyclopedia-1091968."),
