@@ -39,15 +39,32 @@ def get_facts(dino_id):
         with conn.cursor() as cursor:
             cursor.execute(sql,(dino_id))
             return cursor.fetchall()
-    
+
+#function to validate fact form
+def check_fact(name, fact):
+    error = ""
+    msg=[]
+    if not name:
+        msg.append("Name is missing!")
+    if len(name) > 15:
+        msg.append("Name is too long!")
+    if not fact:
+        msg.append("Fun fact is missing!")
+    if len(fact) > 255:
+        msg.append("Fun fact is longer than 255 characters!")
+    if len(msg) > 0:
+        error= " \n".join(msg)
+    return error    
 
 @app.route('/')
 @app.route('/dino/')
-@app.route('/dino/<dino>')
+@app.route('/dino/<dino_id>')
 def index(dino_id=None):
+    print(dino_id)
     if dino_id:
+        print(dino_id)
         dinosaur = database.get_dino(dino_id)
-        facts=database.get_facts(dino_id)
+        facts=get_facts(dino_id)
         return render_template('dino.html', dinosaur = dinosaur ,facts=facts)
     else:
         dinosaurs=database.get_dinos()
@@ -113,11 +130,15 @@ def dino_quiz():
 @app.route('/dino/<dino_id>/addfact', methods=['GET','POST'])
 def addfact(dino_id):
     dino_id=int(dino_id)
+    dino = database.get_dino(dino_id)
     if request.method == 'POST':
         name = request.form['name']
         fact = request.form['fact']
+        error = check_fact(name, fact)
+        if error:
+            return render_template("add_fact.html", error=error, 
+            name=name, fact=fact, dino=dino)
         database.insert_fact(dino_id, name, fact)
         return redirect(url_for('index',dino_id=dino_id))
     else:
-        dino = database.get_dino(dino_id)
         return render_template("add_fact.html",dino=dino)
